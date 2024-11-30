@@ -1,12 +1,130 @@
+//Functions that adds GFT AI Impact buttons on third-party solutions
+function addCodeReviewButtonOnPRList() {
+    console.log("Entrou na lista de pull requests no github");
+    console.log("TODO: Adicionar o botão");
+}
+function addCodeReviewButtonOnPRDetails() {
+    console.log("Entrou nos detalhes de um pull request no github");
+    console.log("TODO: Adicionar o botão");
+}
+function addCreateUserStoryButtonOnFeatureList() {
+    console.log("Entrou na lista de features do Azure DevOps");
+    console.log("TODO: Adicionar o botão");
+}
+function addCreateUserStoryButtonOnFeatureDetails() {
+    console.log("Entrou nos detalhes de uma feature no Azure DevOps");
+    console.log("TODO: Adicionar o botão");
+}
+
+//Capture the events sent by background.js
+//Usually triggered if the users navigates through the page
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.message === 'github_pullrequest_details') {
-        console.log("Entrou nos detalhes de um pull request no github");
-        console.log("TODO: Adicionar o botão");
+        addCodeReviewButtonOnPRDetails()
     } else if (request.message === 'github_pullrequest_list') {
-        console.log("Entrou na lista de pull requests no github");
-        console.log("TODO: Adicionar o botão");
+        addCodeReviewButtonOnPRList()
+    } else if (request.message === 'azure_devops_feature_details') {
+        addCreateUserStoryButtonOnFeatureDetails();
+    } else if (request.message === 'azure_devops_feature_list') {
+        addCreateUserStoryButtonOnFeatureList();
     }
 })
+
+//Check if user is inside a github pull request details page
+//Ex: https://github.com/ranierimazili/gft-hackatrampo/pull/4
+function isInsideGithubPRDetailsPage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        return true;
+    }
+    return false;
+}
+
+//Check if user is inside a github pull request list page
+//Ex: https://github.com/ranierimazili/gft-hackatrampo/pulls
+function isInsideGithubPRListPage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/pulls$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        return true;
+    }
+    return false;
+}
+
+//Check if user is inside a github pull request list or details page
+function extractInfoFromGithubPR(url) {
+    if (isInsideGithubPRDetailsPage(url)) {
+        return "github_pullrequest_details";
+    } else if (isInsideGithubPRListPage(url)) {
+        return "github_pullrequest_list";
+    }
+    return null;
+}
+
+//Check if user is inside a Azure DevOps workitems list page
+//Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/recentlyupdated/
+function isInsideAzureDevOpsListPage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/_workitems\/recentlyupdated\/$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        return true;
+    }
+    return false;
+}
+
+//Check if user is inside a Azure DevOps workitems feature page
+//Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/edit/7/
+function isInsideAzureDevOpsFeaturePage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/_workitems\/edit\/(\d+)\/$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        return true;
+    }
+    return false;
+}
+
+//Check if user is inside a github pull request list or details page
+function extractInfoFromAzureDevOps(url) {
+    //console.log("entrou azops")
+    if (isInsideAzureDevOpsFeaturePage(url)) {
+        return "azure_devops_feature_details";
+    } else if (isInsideAzureDevOpsListPage(url)) {
+        return "azure_devops_feature_list";
+    }
+    return null;
+}
+
+//Check if the user is inside any page where the plugin must add options
+function checkPage(location) {
+    let url = new URL(location);
+    if (url.host === "github.com") {
+        return extractInfoFromGithubPR(url);
+    } else if (url.host === "dev.azure.com") {
+        return extractInfoFromAzureDevOps(url);
+    }
+    return;
+}
+
+
+//Usually triggered on full load moments, like user entering the page directly typing the url of refresh (F5) moments
+function onload() {
+    //let url = new URL(document.location.href);
+    const pageType = checkPage(document.location.href);
+
+    if (pageType === 'github_pullrequest_details') {
+        addCodeReviewButtonOnPRDetails()
+    } else if (pageType === 'github_pullrequest_list') {
+        addCodeReviewButtonOnPRList()
+    } else if (pageType === 'azure_devops_feature_details') {
+        addCreateUserStoryButtonOnFeatureDetails();
+    } else if (pageType === 'azure_devops_feature_list') {
+        addCreateUserStoryButtonOnFeatureList();
+    }
+
+}
+
+onload();
 
 /*function addCRButtonInsidePROnGithub() {
     console.log("Add the button here");
