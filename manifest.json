@@ -1,0 +1,10 @@
+{
+    "manifest_version": 3,
+    "name": "GFT AI Impact",
+    "description": "A plugin to integrate GFT AI Impact features directly on third-party websites (Azure DevOps & Github)",
+    "version": "1.0",
+    "action": {
+      "default_popup": "hello.html",
+      "default_icon": "hello_extensions.png"
+    }
+  }
