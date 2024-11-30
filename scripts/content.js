@@ -1,13 +1,58 @@
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.message === 'github_pullrequest_details') {
+        console.log("Entrou nos detalhes de um pull request no github");
+        console.log("TODO: Adicionar o botão");
+    } else if (request.message === 'github_pullrequest_list') {
+        console.log("Entrou na lista de pull requests no github");
+        console.log("TODO: Adicionar o botão");
+    }
+})
 
-var url = new URL(document.location.href);
+/*function addCRButtonInsidePROnGithub() {
+    console.log("Add the button here");
+}*/
 
-if (url.host == "github.com") {
-    console.log("Ta no github, fazer o chablau aqui...")
-} else if (url.host == "dev.azure.com") {
-    console.log("Ta no Azure DevOps, fazer o chablau aqui...")
-} else {
-    console.log("Página ainda não suportada pelo plugin");
-}
+/*function checkPage() {
+    let url = new URL(document.location.href);
+    let regex = /^\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        const user = match[1];
+        const repo = match[2];
+        const pullRequestNumber = match[3];
+    
+        console.log("User:", user);
+        console.log("Repository:", repo);
+        console.log("Pull Request Number:", pullRequestNumber);
+    }
+}*/
+
+
+//let url = new URL(document.location.href);
+//console.log("url: ", url)
+
+//if (url.host == "github.com") {
+//    console.log("Ta no github, fazer o chablau aqui...");
+    /*let regex = /^\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/;
+    let match = url.pathname.match(regex);
+
+    console.log("Tentou fazer o match", match);
+
+    if (match) {
+        const user = match[1];
+        const repo = match[2];
+        const pullRequestNumber = match[3];
+    
+        console.log("User:", user);
+        console.log("Repository:", repo);
+        console.log("Pull Request Number:", pullRequestNumber);
+    }*/
+
+//} else if (url.host == "dev.azure.com") {
+//    console.log("Ta no Azure DevOps, fazer o chablau aqui...")
+//} else {
+//    console.log("Página ainda não suportada pelo plugin");
+//}
 
 /*console.log("Ranieri")
 console.log(document.location.href);
