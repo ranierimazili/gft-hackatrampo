@@ -28,35 +28,7 @@ function addCodeReviewButtonOnPRDetails() {
       button.addEventListener('click', () => {
         // Adicionar o evento!!!
 
-
-        const { exec } = require('child_process');
-        const path = require('path');
-        
-        // Caminho para o arquivo .bat
-        const batFile = path.join(__dirname, 'gft_mock.bat'); // Usa o caminho absoluto na mesma pasta
-        
-        // Função para executar o arquivo .bat
-        exec(`"${batFile}"`, (error, stdout, stderr) => {
-          if (error) {
-            console.error(`Erro ao executar o arquivo .bat: ${error.message}`);
-            return;
-          }
-          if (stderr) {
-            console.error(`Erro durante a execução: ${stderr}`);
-            return;
-          }
-          console.log(`Saída do comando: ${stdout}`);
-        });
-
-
-
-
-
         alert('Botão IA Impact clicado!');
-
-
-
-
 
       });
 

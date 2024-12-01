@@ -30,11 +30,46 @@ function extractInfoFromGithubPR(url) {
     return null;
 }
 
+//Check if user is inside a Azure DevOps workitems list page
+//Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/recentlyupdated/
+function isInsideAzureDevOpsListPage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/_workitems\/recentlyupdated\/$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        return true;
+    }
+    return false;
+}
+
+//Check if user is inside a Azure DevOps workitems feature page
+//Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/edit/7/
+function isInsideAzureDevOpsFeaturePage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/_workitems\/edit\/(\d+)\/$/;
+    let match = url.pathname.match(regex);
+    if (match) {
+        return true;
+    }
+    return false;
+}
+
+//Check if user is inside a github pull request list or details page
+function extractInfoFromAzureDevOps(url) {
+    //console.log("entrou azops")
+    if (isInsideAzureDevOpsFeaturePage(url)) {
+        return "azure_devops_feature_details";
+    } else if (isInsideAzureDevOpsListPage(url)) {
+        return "azure_devops_feature_list";
+    }
+    return null;
+}
+
 //Check if the user is inside any page where the plugin must add options
 function checkPage(location) {
     let url = new URL(location);
-    if (url.host == "github.com") {
+    if (url.host === "github.com") {
         return extractInfoFromGithubPR(url);
+    } else if (url.host === "dev.azure.com") {
+        return extractInfoFromAzureDevOps(url);
     }
     return;
 }
