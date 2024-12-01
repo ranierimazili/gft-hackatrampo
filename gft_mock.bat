@@ -19,5 +19,5 @@ set filename=%temp_dir%\%year%-%month%-%day%-%hour%-%minute%-%second%.txt
 :: Cria o arquivo na pasta local "temp" com o nome gerado
 echo Arquivo criado em %date% %time% > "%filename%"
 
-:: Aguarda 30 segundos
+:: Aguarda 15 segundos
 timeout /t 15 /nobreak >nul

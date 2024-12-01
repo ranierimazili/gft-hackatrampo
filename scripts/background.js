@@ -87,3 +87,17 @@ chrome.tabs.onUpdated.addListener(function
         }
     }
 );
+
+let port = null;
+// Recebe a mensagem do content.js
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "executarTarefa") {
+        console.log("Ação recebida do botão na página!");
+
+        //TODO: Da pra passar parâmetro pro comando? vou ter que passar o pull request id
+        //TODO: Da pra esperar o comando terminar pra retornar? seria importante pra dar feedback pro usuário de que a tarefa terminou
+        port = chrome.runtime.connectNative('com.gft.aiimpact');
+
+        sendResponse({ message: "Tarefa executada com sucesso!" });
+    }
+});

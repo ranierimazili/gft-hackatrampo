@@ -1,0 +1,7 @@
+{
+    "name": "com.gft.aiimpact",
+    "description": "My Application",
+    "path": "../gft_mock.bat",
+    "type": "stdio",
+    "allowed_origins": ["chrome-extension://iklgdmekgghfikopckakmjflgfljkpgc/"]
+  }

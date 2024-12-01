@@ -8,7 +8,7 @@ function addCodeReviewButtonOnPRDetails() {
   // Seleciona o contêiner principal com a classe 'gh-header-show'
   const headerShowElement = document.querySelector('.gh-header-show');
 
-  console.log(headerShowElement)
+  //console.log(headerShowElement)
 
   if (headerShowElement) {
     // Seleciona o elemento aninhado com a classe específica
@@ -27,9 +27,10 @@ function addCodeReviewButtonOnPRDetails() {
       
       button.addEventListener('click', () => {
         // Adicionar o evento!!!
-
-        alert('Botão IA Impact clicado!');
-
+        //alert('Botão IA Impact clicado!');
+        chrome.runtime.sendMessage({ action: "executarTarefa" }, (response) => {
+            console.log(response.message);
+        });
       });
 
       // Insere o botão no elemento encontrado
@@ -39,7 +40,6 @@ function addCodeReviewButtonOnPRDetails() {
     console.error('Elemento gh-header-show não encontrado.');
   }
 }
-
 
 function addCreateUserStoryButtonOnFeatureList() {
   console.log("Entrou na lista de features do Azure DevOps");
