@@ -16,8 +16,11 @@ set minute=%datetime:~10,2%
 set second=%datetime:~12,2%
 set filename=%temp_dir%\%year%-%month%-%day%-%hour%-%minute%-%second%.txt
 
-:: Cria o arquivo na pasta local "temp" com o nome gerado
-echo Arquivo criado em %date% %time% > "%filename%"
+:: Cria o cabeçalho no arquivo
+echo Parâmetros recebidos pelo script: > "%filename%"
 
-:: Aguarda 15 segundos
-timeout /t 15 /nobreak >nul
+:: Lê entrada do STDIN e grava diretamente no arquivo
+for /f "delims=" %%A in ('more') do echo %%A >> "%filename%"
+
+:: Finaliza o script
+exit /b

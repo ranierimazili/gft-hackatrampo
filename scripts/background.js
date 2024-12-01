@@ -96,7 +96,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         //TODO: Da pra passar parâmetro pro comando? vou ter que passar o pull request id
         //TODO: Da pra esperar o comando terminar pra retornar? seria importante pra dar feedback pro usuário de que a tarefa terminou
-        port = chrome.runtime.connectNative('com.gft.aiimpact');
+        //port = chrome.runtime.connectNative('com.gft.aiimpact');
+
+        chrome.runtime.sendNativeMessage(
+            'com.gft.aiimpact',
+            {prNumber: '1234'}
+        );
+
+          /*var port = chrome.runtime.connectNative('com.gft.aiimpact');
+            port.onMessage.addListener(function (msg) {
+            console.log('Received' + msg);
+            });
+            port.onDisconnect.addListener(function () {
+            console.log('Disconnected');
+            });
+            
+            port.postMessage({text: 'Hello, my_application'});*/
+            //port.disconnect();
 
         sendResponse({ message: "Tarefa executada com sucesso!" });
     }
