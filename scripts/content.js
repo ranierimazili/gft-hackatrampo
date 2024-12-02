@@ -63,12 +63,17 @@ function createButton(buttonText) {
   // Criar spinner
   const spinner = document.createElement('div');
   spinner.className = 'button-spinner';
-
-  button.appendChild(spinner);
-
+  
+  
+  
   button.addEventListener('click', () => {
     spinner.style.display = 'inline-block';
+    button.style.backgroundColor = '#3d444d'
     button.style.backgroundImage = 'none';
+    button.innerHTML = '<p class="button-text">Processing... </p>';
+    button.appendChild(spinner);
+    
+
     console.log("na tela");
     //setTimeout(() => location.reload(), 4000);
 

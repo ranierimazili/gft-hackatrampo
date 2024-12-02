@@ -33,7 +33,7 @@
     /* Define o tamanho da fonte */
     border: 1px solid #FFFFFF;
     /* Mantém borda combinando com o fundo */
-    height: 34px;
+    height: 34px !important;
     /* Altura do botão */
     line-height: normal;
     bottom: 25px;
