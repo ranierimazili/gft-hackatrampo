@@ -1,0 +1,36 @@
+/* styles.css */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease forwards;
+    /* Duração de 0.5 segundos */
+}
+
+.button-rounded {
+    border-radius: 100px !important;
+    /* Raio de borda para arredondar */
+}
+
+.button-style {
+    position: fixed !important; /* Fixa o botão na tela */
+    background-size: cover; /* Faz o fundo cobrir todo o botão */
+    background-position: center; 
+    color: #ffffff; /* Texto branco */
+    font-size: 14px; /* Define o tamanho da fonte */
+    border: 1px solid #FFFFFF; /* Mantém borda combinando com o fundo */
+    height: 34px; /* Altura do botão */
+    line-height: normal;
+    bottom: 25px; /* Distância do fundo */
+    right: 25px; /* Distância da direita */
+    z-index: 1000; /* Garante que o botão fique acima de outros */
+}

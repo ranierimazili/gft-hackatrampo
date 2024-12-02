@@ -32,33 +32,27 @@ function extractInfoFromGithubPR(url) {
 
 //Check if user is inside a Azure DevOps workitems list page
 //Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/recentlyupdated/
-function isInsideAzureDevOpsListPage(url) {
-    let regex = /^\/([^\/]+)\/([^\/]+)\/_workitems\/recentlyupdated\/$/;
-    let match = url.pathname.match(regex);
-    if (match) {
-        return true;
-    }
-    return false;
+function isInsideAzureDevopsPRListPage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/_git\/([^\/]+)\/pullrequests$/;
+    let match = url.match(regex);
+    return match !== null;
 }
 
 //Check if user is inside a Azure DevOps workitems feature page
 //Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/edit/7/
-function isInsideAzureDevOpsFeaturePage(url) {
-    let regex = /^\/([^\/]+)\/([^\/]+)\/_workitems\/edit\/(\d+)\/$/;
+function isInsideAzureDevopsPRDetailsPage(url) {
+    let regex = /^\/([^\/]+)\/([^\/]+)\/_git\/([^\/]+)\/pullrequest\/(\d+)$/;
     let match = url.pathname.match(regex);
-    if (match) {
-        return true;
-    }
-    return false;
+    return match !== null;
 }
 
 //Check if user is inside a github pull request list or details page
 function extractInfoFromAzureDevOps(url) {
     //console.log("entrou azops")
-    if (isInsideAzureDevOpsFeaturePage(url)) {
-        return "azure_devops_feature_details";
-    } else if (isInsideAzureDevOpsListPage(url)) {
-        return "azure_devops_feature_list";
+    if (isInsideAzureDevopsPRDetailsPage(url)) {
+        return "azure_pullrequest_details";
+    } else if (isInsideAzureDevopsPRListPage(url)) {
+        return "azure_pullrequest_list";
     }
     return null;
 }
