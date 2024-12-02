@@ -1,6 +1,6 @@
 {
     "name": "com.gft.aiimpact",
-    "description": "My Application",
+    "description": "A plugin to integrate GFT AI Impact features directly on third-party websites (Azure DevOps & Github)",
     "path": "/home/ranieri/projects/gft-hackatrampo/gft_mock.sh",
     "type": "stdio",
     "allowed_origins": ["chrome-extension://alnlcnlcepdbjmpjiciilpihamjpdgba/"]

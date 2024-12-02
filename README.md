@@ -19,8 +19,23 @@ As a proof-of-concept, it has a limited scope, so the available features are:
 
 ## How to install
 
+### Chrome steps
 - Download this respository to a folder in you computer
 - Open Google Chrome and open the url [chrome://extensions](chrome://extensions)
 - Enable the **Developer Mode** to be able to load not published plugins
-- Click the **Load unpacked** button and select the repository directory
-- TODO: Add the image here like google did
+- Click the **Load unpacked** button and select the repository directory<br><br>
+![Screenshot from 2024-12-01 22-16-32](https://github.com/user-attachments/assets/347f01a3-6775-43ad-848f-8e5eeff5f1af)
+
+
+### Windows steps
+TODO
+
+### Linux steps
+On the repository folder, open the file *native-apps/com.gft.aiimpact.json* and edit the following attributes:
+* **path** - set the value to the full path of the *gft_mock.sh* script 
+* **allowed_origins** - replace the id (chrome-extension://<id>/) by the id given by Google Chrome when you loaded the plugin
+
+Copy the file *native-apps/com.gft.aiimpact.json* to *~/.config/google-chrome/NativeMessagingHosts/*
+
+## Testing
+TODO

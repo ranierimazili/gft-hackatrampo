@@ -35,9 +35,9 @@ function isInsideAzureDevOpsFeaturePage(url) {
 //Check if user is inside a github pull request list or details page
 function extractInfoFromAzureDevOps(url) {
     //console.log("entrou azops")
-    if (isInsideAzureDevopsPRDetailsPage(url)) {
+    if (isInsideAzureDevOpsFeaturePage(url)) {
         return "azure_devops_feature_details";
-    } else if (isInsideAzureDevopsPRListPage(url)) {
+    } else if (isInsideAzureDevOpsListPage(url)) {
         return "azure_devops_feature_list";
     }
     return null;
@@ -83,9 +83,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
 
         port.onDisconnect.addListener(() => {
-            console.log("Conexão encerrada com o Native Messaging Host.");
-        });
+            if (chrome.runtime.lastError) {
+                console.log("Erro ao desconectar:", chrome.runtime.lastError.message);
+            } else {
+                console.log("Conexão encerrada com o Native Messaging Host.");
+            }
+        });  
 
+        //TODO: mandar essa linha provavelmente pra dentro de onMessage
         sendResponse({ message: "Tarefa executada com sucesso!" });
     }
 });
