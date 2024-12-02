@@ -24,7 +24,7 @@ function addCodeReviewButtonOnPRDetails() {
 				//Build the event that will be sent to the shell script
 				let event = {
 					eventType: "codereview", //codereview or storycreator
-					id: "12345" //id of the pull request or the feature
+					id: getPullRequestIdFromUrl() //id of the pull request or the feature
 				};
 
 				//TODO: If necessary, add the load icon here before call sendMessage
@@ -128,6 +128,21 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 		addCreateUserStoryButtonOnFeatureList();
 	}
 })
+
+function getPullRequestIdFromUrl() {
+
+	const currentUrl = window.location.href;
+    const regex = /\/pull\/(\d+)/;
+    const match = currentUrl.match(regex);
+
+    // Verifica se encontrou o pull request na URL e retorna o ID
+    if (match && match[1]) {
+        return match[1];  // Retorna o ID do pull request
+    } else {
+        console.error('ID do pull request não encontrado na URL.');
+        return null;
+    }
+}
 
 //Usually triggered on full load moments, like user entering the page directly typing the url of refresh (F5) moments
 function onload() {
