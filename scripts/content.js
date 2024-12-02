@@ -6,15 +6,15 @@ function getButtonTextByRequest(request) {
     buttonText = 'AI PR Description';
   } else if (request === 'github_pullrequest_list') {
     buttonText = 'IA Impact 2';
-  } else if (request === 'azure_feature_details') {
+  } else if (request === 'azure_devops_feature_details') {
     buttonText = 'AI PR Description';
-  } else if (request === 'azure_feature_list') {
+  } else if (request === 'azure_devops_feature_list') {
     buttonText = 'IA Impact 4';
-  } else if (request === 'azure_pullrequest_details') {
+  }/* else if (request === 'azure_pullrequest_details') {
     buttonText = 'AI PR Description';
   } else if (request === 'azure_pullrequest_list') {
     buttonText = 'IA Impact 6';
-  }
+  }*/
 
   return buttonText;
 }
@@ -118,16 +118,7 @@ function destroyButton() {
 
 }
 
-//Capture the events sent by background.js
-//Usually triggered if the users navigates through the page
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  const buttonText = getButtonTextByRequest(request.message);
 
-  if (buttonText === '')
-    destroyButton();
-  else
-    createButton(buttonText);
-})
 
 //Check if user is inside a github pull request details page
 //Ex: https://github.com/ranierimazili/gft-hackatrampo/pull/4
@@ -201,11 +192,25 @@ function getPullRequestIdFromUrl() {
   }
 }
 
+//Capture the events sent by background.js
+//Usually triggered if the users navigates through the page
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  const buttonText = getButtonTextByRequest(request.message);
+  console.log("buttonText:", buttonText);
+  console.log("request.message:", request.message);
+  if (buttonText === '')
+    destroyButton();
+  else
+    createButton(buttonText);
+})
+
 //Usually triggered on full load moments, like user entering the page directly typing the url of refresh (F5) moments
 function onload() {
   const pageType = checkPage(document.location.href);
+  console.log("pageType:", pageType)
 
   const buttonText = getButtonTextByRequest(pageType);
+  console.log("buttonText:", buttonText);
   if (buttonText === '')
     destroyButton();
   else
