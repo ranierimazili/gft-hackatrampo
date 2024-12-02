@@ -47,6 +47,7 @@
 .button-text {
     vertical-align: top;
     display: inline;
+    color: white;
 }
 
 @keyframes spin {

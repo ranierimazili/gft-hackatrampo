@@ -3,18 +3,14 @@ function getButtonTextByRequest(request) {
   let buttonText = '';
 
   if (request === 'github_pullrequest_details') {
-    buttonText = 'AI PR Description';
+    buttonText = 'Review PR with GFT AI Impact';
   } else if (request === 'github_pullrequest_list') {
-    buttonText = 'IA Impact 2';
+    buttonText = 'Review PR with GFT AI Impact';
   } else if (request === 'azure_devops_feature_details') {
-    buttonText = 'AI PR Description';
+    buttonText = 'Create User Stories with GFT AI Impact';
   } else if (request === 'azure_devops_feature_list') {
-    buttonText = 'IA Impact 4';
-  }/* else if (request === 'azure_pullrequest_details') {
-    buttonText = 'AI PR Description';
-  } else if (request === 'azure_pullrequest_list') {
-    buttonText = 'IA Impact 6';
-  }*/
+    buttonText = 'Create User Stories with GFT AI Impact';
+  }
 
   return buttonText;
 }
@@ -68,15 +64,13 @@ function createButton(buttonText) {
   const spinner = document.createElement('div');
   spinner.className = 'button-spinner';
 
-  
   button.appendChild(spinner);
 
   button.addEventListener('click', () => {
-
     spinner.style.display = 'inline-block';
     button.style.backgroundImage = 'none';
     console.log("na tela");
-    setTimeout(() => location.reload(), 4000);
+    //setTimeout(() => location.reload(), 4000);
 
     //Build the event that will be sent to the shell script
     let event = {
@@ -87,18 +81,24 @@ function createButton(buttonText) {
     //TODO: If necessary, add the load icon here before call sendMessage
     chrome.runtime.sendMessage(event, (response) => {
       //TODO: If load icon was loaded, unload it here because the shell script just completed
-      console.log(response.message);
+	  //document.getElementsByClassName('button-spinner')[0].style.display = 'none';
+	  //document.getElementsByClassName('btn bolt-button slide-in button-rounded button-style')[0].style.backgroundImage = `url(${url})`;
+	  /*spinner.style.display = 'none';
+      button.style.backgroundImage = `url(${url})`;
+      location.reload();*/
+      console.log("saiu");
+      //console.log(response.message);
 
     });
 
-    setTimeout(() => {
+    /*setTimeout(() => {
 
       spinner.style.display = 'none';
       button.style.backgroundImage = `url(${url})`;
       location.reload();
       console.log("saiu");
 
-    }, 4000); // Esperar 4 segundos para teste
+    }, 4000);*/ // Esperar 4 segundos para teste
 
   });
 
@@ -110,15 +110,12 @@ function destroyButton() {
   // Seleciona todos os elementos com a classe 'button-style'
   const buttons = document.querySelectorAll('.button-style');
   
-
   // Itera sobre cada botão encontrado e remove do DOM
   buttons.forEach(button => {
     button.remove(); // Remove o botão do DOM
   });
 
 }
-
-
 
 //Check if user is inside a github pull request details page
 //Ex: https://github.com/ranierimazili/gft-hackatrampo/pull/4
@@ -178,43 +175,57 @@ function checkPage(location) {
 
 //Obtendo o card ID
 function getPullRequestIdFromUrl() {
+	const currentUrl = window.location.href;
+	const regex = /\/pull\/(\d+)/;
+	const match = currentUrl.match(regex);
 
-  const currentUrl = window.location.href;
-  const regex = /\/pull\/(\d+)/;
-  const match = currentUrl.match(regex);
-
-  // Verifica se encontrou o pull request na URL e retorna o ID
-  if (match && match[1]) {
-    return match[1];  // Retorna o ID do pull request
-  } else {
-    console.error('ID do pull request não encontrado na URL.');
-    return null;
-  }
+	// Verifica se encontrou o pull request na URL e retorna o ID
+	if (match && match[1]) {
+		return match[1];  // Retorna o ID do pull request
+	} else {
+		console.error('ID do pull request não encontrado na URL.');
+		return null;
+	}
 }
+
+/*
+ * Page detection triggers
+ *  
+ * Two ways was detected during development.
+ * - When the user enters direcly on a watched url (p.s: github/<user>/<repository>/pulls), the onload function will catch this type of interaction
+ * - When the user navigates through the page (ps: github/<user>/ then click on a <repository> then click on pull requests page), 
+ * 	 the chrome.runtime.onMessage.addListener will catch this type of interaction that's trigged by background.js using 'tabs' permission
+ */
 
 //Capture the events sent by background.js
 //Usually triggered if the users navigates through the page
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  const buttonText = getButtonTextByRequest(request.message);
-  console.log("buttonText:", buttonText);
-  console.log("request.message:", request.message);
-  if (buttonText === '')
-    destroyButton();
-  else
-    createButton(buttonText);
+	console.log("requestOnMessageContent:", request);
+	const buttonText = getButtonTextByRequest(request.details);
+	if (request.type === "URL_CHANGED") {
+		if (buttonText === '') {
+			destroyButton();
+		} else {
+			createButton(buttonText);
+		}
+	} else if (request.type === "JOB_FINISHED") {
+		console.log("voltar o botão normal e dar um refresh");
+		//document.getElementsByClassName('button-spinner')[0].style.display = 'none';
+	  	//document.getElementsByClassName('btn bolt-button slide-in button-rounded button-style')[0].style.backgroundImage = `url(${url})`;
+		//destroyButton();
+		//createButton(buttonText);
+		location.reload();
+	}
 })
 
 //Usually triggered on full load moments, like user entering the page directly typing the url of refresh (F5) moments
 function onload() {
-  const pageType = checkPage(document.location.href);
-  console.log("pageType:", pageType)
+	const pageType = checkPage(document.location.href);
+	const buttonText = getButtonTextByRequest(pageType);
 
-  const buttonText = getButtonTextByRequest(pageType);
-  console.log("buttonText:", buttonText);
-  if (buttonText === '')
-    destroyButton();
-  else
-    createButton(buttonText);
-
+	if (buttonText === '')
+		destroyButton();
+	else
+		createButton(buttonText);
 }
 onload();

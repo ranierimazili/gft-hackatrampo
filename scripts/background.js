@@ -54,18 +54,22 @@ function checkPage(location) {
     return;
 }
 
+//Global tabId to be used to send events to content.js
+let globalTabId = null;
+
 //Triggers the message to the content.js when the user is a page where the plugin must add options
 chrome.tabs.onUpdated.addListener(function
     (tabId, changeInfo, tab) {
-    if (changeInfo.url) {
-        const pageType = checkPage(changeInfo.url);
+        globalTabId = tabId;
+        if (changeInfo.url) {
+            const pageType = checkPage(changeInfo.url);
 
-        chrome.tabs.sendMessage(tabId, {
-            message: pageType
-        })
-
+            chrome.tabs.sendMessage(tabId, {
+                type: "URL_CHANGED",
+                details: pageType
+            })
+        }
     }
-}
 );
 
 // Recebe a mensagem do content.js no formato abaixo
@@ -80,6 +84,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         port.onMessage.addListener((response) => {
             console.log("Resposta do Native Messaging Host:", response);
+            //Send the event to the tab notifying that the script has finished it's execution
+            chrome.tabs.sendMessage(globalTabId, {
+                type: "JOB_FINISHED"
+            })
         });
 
         port.onDisconnect.addListener(() => {
@@ -90,8 +98,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
         });  
 
-        //TODO: mandar essa linha provavelmente pra dentro de onMessage
-        sendResponse({ message: "Tarefa executada com sucesso!" });
+        sendResponse({ type: "JOB_STARTED" });
     }
 });
 
