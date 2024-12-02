@@ -13,8 +13,8 @@
 
 .slide-in {
     animation: slideIn 0.5s ease forwards;
-    /* Duração de 0.5 segundos */
 }
+
 
 .button-rounded {
     border-radius: 100px !important;
@@ -22,15 +22,51 @@
 }
 
 .button-style {
-    position: fixed !important; /* Fixa o botão na tela */
-    background-size: cover; /* Faz o fundo cobrir todo o botão */
-    background-position: center; 
-    color: #ffffff; /* Texto branco */
-    font-size: 14px; /* Define o tamanho da fonte */
-    border: 1px solid #FFFFFF; /* Mantém borda combinando com o fundo */
-    height: 34px; /* Altura do botão */
+    position: fixed !important;
+    /* Fixa o botão na tela */
+    background-size: cover;
+    /* Faz o fundo cobrir todo o botão */
+    background-position: center;
+    color: #ffffff;
+    /* Texto branco */
+    font-size: 14px;
+    /* Define o tamanho da fonte */
+    border: 1px solid #FFFFFF;
+    /* Mantém borda combinando com o fundo */
+    height: 34px;
+    /* Altura do botão */
     line-height: normal;
-    bottom: 25px; /* Distância do fundo */
-    right: 25px; /* Distância da direita */
-    z-index: 1000; /* Garante que o botão fique acima de outros */
+    bottom: 25px;
+    /* Distância do fundo */
+    right: 25px;
+    /* Distância da direita */
+    z-index: 1000;
+    /* Garante que o botão fique acima de outros */
+}
+
+.button-text {
+    vertical-align: top;
+    display: inline;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.button-spinner {
+    display: none; /* Inicialmente invisível */
+    width: 15px;
+    height: 15px;
+    border: 4px solid #f3f3f3; /* Cor da borda */
+    border-top: 4px solid #993399; /* Cor da parte superior */
+    border-radius: 50%;
+    margin: 2px 2px 0px 10px;
+    padding-top: 2px;
+    animation: spin 0.3s linear infinite;
 }

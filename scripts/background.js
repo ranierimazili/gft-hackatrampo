@@ -1,23 +1,13 @@
 //Check if user is inside a github pull request details page
 //Ex: https://github.com/ranierimazili/gft-hackatrampo/pull/4
 function isInsideGithubPRDetailsPage(url) {
-    let regex = /^\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/;
-    let match = url.pathname.match(regex);
-    if (match) {
-        return true;
-    }
-    return false;
+    return (url.pathname.match(/^\/([^\/]+)\/([^\/]+)\/pull\/(\d+)$/) !== null);
 }
 
 //Check if user is inside a github pull request list page
 //Ex: https://github.com/ranierimazili/gft-hackatrampo/pulls
 function isInsideGithubPRListPage(url) {
-    let regex = /^\/([^\/]+)\/([^\/]+)\/pulls$/;
-    let match = url.pathname.match(regex);
-    if (match) {
-        return true;
-    }
-    return false;
+    return (url.pathname.match(/^\/([^\/]+)\/([^\/]+)\/pulls$/) !== null);
 }
 
 //Check if user is inside a github pull request list or details page
@@ -32,27 +22,23 @@ function extractInfoFromGithubPR(url) {
 
 //Check if user is inside a Azure DevOps workitems list page
 //Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/recentlyupdated/
-function isInsideAzureDevopsPRListPage(url) {
-    let regex = /^\/([^\/]+)\/([^\/]+)\/_git\/([^\/]+)\/pullrequests$/;
-    let match = url.match(regex);
-    return match !== null;
+function isInsideAzureDevOpsListPage(url) {
+    return (url.pathname.match(/^\/([^\/]+)\/([^\/]+)\/_workitems\/recentlyupdated\/$/) !== null);
 }
 
 //Check if user is inside a Azure DevOps workitems feature page
 //Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/edit/7/
-function isInsideAzureDevopsPRDetailsPage(url) {
-    let regex = /^\/([^\/]+)\/([^\/]+)\/_git\/([^\/]+)\/pullrequest\/(\d+)$/;
-    let match = url.pathname.match(regex);
-    return match !== null;
+function isInsideAzureDevOpsFeaturePage(url) {
+    return (url.pathname.match(/^\/([^\/]+)\/([^\/]+)\/_workitems\/edit\/(\d+)\/$/) !== null);
 }
 
 //Check if user is inside a github pull request list or details page
 function extractInfoFromAzureDevOps(url) {
     //console.log("entrou azops")
     if (isInsideAzureDevopsPRDetailsPage(url)) {
-        return "azure_pullrequest_details";
+        return "azure_devops_feature_details";
     } else if (isInsideAzureDevopsPRListPage(url)) {
-        return "azure_pullrequest_list";
+        return "azure_devops_feature_list";
     }
     return null;
 }
@@ -71,43 +57,36 @@ function checkPage(location) {
 //Triggers the message to the content.js when the user is a page where the plugin must add options
 chrome.tabs.onUpdated.addListener(function
     (tabId, changeInfo, tab) {
-        if (changeInfo.url) {
-            const pageType = checkPage(changeInfo.url);
-            if (pageType) {
-                chrome.tabs.sendMessage( tabId, {
-                    message: pageType
-                })
-            }
-        }
+    if (changeInfo.url) {
+        const pageType = checkPage(changeInfo.url);
+
+        chrome.tabs.sendMessage(tabId, {
+            message: pageType
+        })
+
     }
+}
 );
 
-let port = null;
-// Recebe a mensagem do content.js
+// Recebe a mensagem do content.js no formato abaixo
+// { eventType: "", "id": ""}
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "executarTarefa") {
+    //if (request.action === "executarTarefa") {
+    if (['codereview', 'storycreator'].includes(request.eventType)) {
         console.log("Ação recebida do botão na página!");
 
-        //TODO: Da pra passar parâmetro pro comando? vou ter que passar o pull request id
-        //TODO: Da pra esperar o comando terminar pra retornar? seria importante pra dar feedback pro usuário de que a tarefa terminou
-        //port = chrome.runtime.connectNative('com.gft.aiimpact');
+        let port = chrome.runtime.connectNative('com.gft.aiimpact');
+        port.postMessage({ args: `$${request.eventType}#${request.id}$` });
 
-        chrome.runtime.sendNativeMessage(
-            'com.gft.aiimpact',
-            {prNumber: '1234'}
-        );
+        port.onMessage.addListener((response) => {
+            console.log("Resposta do Native Messaging Host:", response);
+        });
 
-          /*var port = chrome.runtime.connectNative('com.gft.aiimpact');
-            port.onMessage.addListener(function (msg) {
-            console.log('Received' + msg);
-            });
-            port.onDisconnect.addListener(function () {
-            console.log('Disconnected');
-            });
-            
-            port.postMessage({text: 'Hello, my_application'});*/
-            //port.disconnect();
+        port.onDisconnect.addListener(() => {
+            console.log("Conexão encerrada com o Native Messaging Host.");
+        });
 
         sendResponse({ message: "Tarefa executada com sucesso!" });
     }
 });
+
