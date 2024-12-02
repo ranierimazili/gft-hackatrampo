@@ -14,13 +14,33 @@ function addCodeReviewButtonOnPRDetails() {
 		if (actionsElement) {
 			const button = document.createElement('button');
 			
+			// Criar Botao
 			button.textContent = 'IA Impact';
 			button.className = 'btn btn-sm m-0 ml-0 ml-md-2';
 			button.style.backgroundColor = '#003366'; // Azul escuro
 			button.style.color = '#ffffff'; // Texto branco
 			button.style.border = '1px solid #003366'; // Mantém borda combinando com o fundo
 
+
+			// Criar spinner
+			const spinner = document.createElement('div');
+			spinner.className = 'spinner';
+			spinner.style.display = 'none'; // Inicialmente invisível
+			spinner.style.width = '30px';
+			spinner.style.height = '30px';
+			spinner.style.border = '4px solid #f3f3f3'; // Cor da borda
+			spinner.style.borderTop = '4px solid #003366'; // Cor da parte superior
+			spinner.style.borderRadius = '50%';
+			spinner.style.animation = 'spin 2s linear infinite';
+			actionsElement.appendChild(spinner);
+
+
 			button.addEventListener('click', () => {
+
+				spinner.style.display = 'inline-block';
+				console.log("na tela");
+				setTimeout(() => location.reload(), 4000);
+
 				//Build the event that will be sent to the shell script
 				let event = {
 					eventType: "codereview", //codereview or storycreator
@@ -31,7 +51,19 @@ function addCodeReviewButtonOnPRDetails() {
 				chrome.runtime.sendMessage(event, (response) => {
 					//TODO: If load icon was loaded, unload it here because the shell script just completed
 					console.log(response.message);
+					
 				});
+
+				setTimeout(() => {
+
+					spinner.style.display = 'none';
+					location.reload();
+					console.log("saiu");
+
+				  }, 4000); // Esperar 4 segundos para teste
+				
+
+				
 			});
 
 			// Insere o botão no elemento encontrado
@@ -159,3 +191,17 @@ function onload() {
 	}
 }
 onload();
+
+// Adicionar a animação de rotação da bola giratória via CSS
+const style = document.createElement('style');
+style.innerHTML = `
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .spinner {
+    animation: spin 1s linear infinite; /* Aplica a animação diretamente na classe */
+  }
+`;
+document.head.appendChild(style);
