@@ -1,7 +1,7 @@
 {
     "name": "com.gft.aiimpact",
     "description": "My Application",
-    "path": "../gft_mock_old.bat",
+    "path": "/home/ranieri/projects/gft-hackatrampo/gft_mock.sh",
     "type": "stdio",
-    "allowed_origins": ["chrome-extension://iklgdmekgghfikopckakmjflgfljkpgc/"]
-  }
+    "allowed_origins": ["chrome-extension://alnlcnlcepdbjmpjiciilpihamjpdgba/"]
+}
