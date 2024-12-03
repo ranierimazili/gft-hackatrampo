@@ -33,14 +33,39 @@ sendmsg() {
 }
 
 while readmsg; do
-    #chamar AI Impact
+    #Extract variable values from message
     event_type=`echo $msg | cut -d$ -f2 | cut -d# -f1`
     event_id=`echo $msg | cut -d$ -f2 | cut -d# -f2`
-    echo $msg >> ./temp/log.txt
+    platform=`echo $msg | cut -d$ -f2 | cut -d# -f3`
+
+    #Start logging
+    echo "Start: "`date` >> ./temp/log.txt
+    echo "full_message: "$msg >> ./temp/log.txt
     echo "event_type: "$event_type >> ./temp/log.txt
     echo "event_id: "$event_id >> ./temp/log.txt
+    echo "platform: "$platform >> ./temp/log.txt
+    echo "processing..." >> ./temp/log.txt
+
+    case "$event_type" in
+        codereview)
+            gft ${event_type} --config_path /app/config_${platform}.yml --pullnumber ${event_id} > /dev/null 2>&1
+            ;;
+        storycreator)
+            gft ${event_type} --config_path /app/config_${platform}.yml --parent-id ${event_id} > /dev/null 2>&1
+            ;;
+        *)
+            echo "Unknown event_type: "${event_type} >> ./temp/log.txt
+            ;;
+    esac
+    
+    echo "End: "`date` >> ./temp/log.txt
+    echo "-----------------------------" >> ./temp/log.txt
+    
+    #Send the response back to the plugin to notify the end of the processing
     response='{"echo": "foo"}'
-    sleep 5s
     sendmsg "$response"
+    
+    #Wait some seconds to let the message arrive on plugin before close the connection
+    sleep 3s
     break
 done

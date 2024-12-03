@@ -15,7 +15,31 @@ As a proof-of-concept, it has a limited scope, so the available features are:
 
 ## Dependencies
 
-- **GFT AI Impact CLI** must be installed and correctly configured to integrate with Azure DevOps project and Github repository
+- **GFT AI Impact CLI** must be installed and correctly configured to integrate with Azure DevOps project and Github repository.
+
+- It must be configured to be used on two platforms (Github & Azure DevOps), so you must have two config.yml files named like demonstrated below and with their respective configurations:
+    - config_github.yml
+    - config_azure.yml
+
+...and on the docker-compose.yml file you must declare both files on *volumes* section and your hackathon credentials, like the example below:
+
+```yml
+services:
+  gftaiimpact:
+    image: gftai.azurecr.io/gft-ai-impact-cli:latest 
+    environment:
+      USE_AZURE_AKV: ${USE_AZURE_AKV}
+      AZURE_TENANT_ID: ${AZURE_TENANT_ID}
+      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
+      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
+      AZURE_KEYVAULT_NAME: ${AZURE_KEYVAULT_NAME}
+    volumes:
+      - ~/.gft/config_github.yml:/app/config_github.yml
+      - ~/.gft/config_azure.yml:/app/config_azure.yml
+      - ~/.gft/innovation-hackathon-440718-36b04b036f9e.json:/app/innovation-hackathon-440718-36b04b036f9e.json
+```
+
+P.S: If you are using *setup.sh* to copy the files to ~/.gft folder, maybe you'll need to edit setup.sh to make it copy config*.yml instead of config.yml only to ~/.gft
 
 ## How to install
 
@@ -23,12 +47,8 @@ As a proof-of-concept, it has a limited scope, so the available features are:
 - Download this respository to a folder in you computer
 - Open Google Chrome and open the url [chrome://extensions](chrome://extensions)
 - Enable the **Developer Mode** to be able to load not published plugins
-- Click the **Load unpacked** button and select the repository directory<br><br>
+- Click the **Load unpacked** button and select the repository folder<br><br>
 ![Screenshot from 2024-12-01 22-16-32](https://github.com/user-attachments/assets/347f01a3-6775-43ad-848f-8e5eeff5f1af)
-
-
-### Windows steps
-TODO
 
 ### Linux steps
 On the repository folder, open the file *native-apps/com.gft.aiimpact.json* and edit the following attributes:
@@ -37,5 +57,10 @@ On the repository folder, open the file *native-apps/com.gft.aiimpact.json* and 
 
 Copy the file *native-apps/com.gft.aiimpact.json* to *~/.config/google-chrome/NativeMessagingHosts/*
 
+### Windows steps
+*Windows version is not avaiable on this version*
+
 ## Testing
-TODO
+After install the plugin, when you open the Pull Request details page on Github or Feature details page on Azure DevOps, a new button will appear at the bottom right corner offering the right option for that specific scenario.
+
+![Buttons on Github and Azure DevOps](https://github.com/user-attachments/assets/c6af93ea-34ae-41ef-9611-1050f999ea96)

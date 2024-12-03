@@ -14,9 +14,9 @@ function isInsideGithubPRListPage(url) {
 function extractInfoFromGithubPR(url) {
     if (isInsideGithubPRDetailsPage(url)) {
         return "github_pullrequest_details";
-    } else if (isInsideGithubPRListPage(url)) {
+    } /*else if (isInsideGithubPRListPage(url)) {
         return "github_pullrequest_list";
-    }
+    }*/
     return null;
 }
 
@@ -37,9 +37,9 @@ function extractInfoFromAzureDevOps(url) {
     //console.log("entrou azops")
     if (isInsideAzureDevOpsFeaturePage(url)) {
         return "azure_devops_feature_details";
-    } else if (isInsideAzureDevOpsListPage(url)) {
+    } /*else if (isInsideAzureDevOpsListPage(url)) {
         return "azure_devops_feature_list";
-    }
+    }*/
     return null;
 }
 
@@ -75,24 +75,24 @@ chrome.tabs.onUpdated.addListener(function
 // Recebe a mensagem do content.js no formato abaixo
 // { eventType: "", "id": ""}
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    //if (request.action === "executarTarefa") {
     if (['codereview', 'storycreator'].includes(request.eventType)) {
         console.log("Ação recebida do botão na página!");
 
         let port = chrome.runtime.connectNative('com.gft.aiimpact');
-        port.postMessage({ args: `$${request.eventType}#${request.id}$` });
+        port.postMessage({ args: `$${request.eventType}#${request.id}#${request.platform}$` });
 
         port.onMessage.addListener((response) => {
             console.log("Resposta do Native Messaging Host:", response);
             //Send the event to the tab notifying that the script has finished it's execution
             chrome.tabs.sendMessage(globalTabId, {
-                type: "JOB_FINISHED"
+                type: "JOB_FINISHED",
+                platform: request.platform
             })
         });
 
         port.onDisconnect.addListener(() => {
             if (chrome.runtime.lastError) {
-                console.log("Erro ao desconectar:", chrome.runtime.lastError.message);
+                console.log("Disconnect:", chrome.runtime.lastError.message);
             } else {
                 console.log("Conexão encerrada com o Native Messaging Host.");
             }
