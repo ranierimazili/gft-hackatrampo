@@ -11,7 +11,7 @@ It's using the CLI(deprecated) version of GFT AI Impact instead of API version b
 
 As a proof-of-concept, it has a limited scope, so the available features are:
 - Create user stories on Azure DevOps using _storycreator_ feature of GFT AI Impact CLI
-- Create a core review of Github pull request using _codereview_ feature of GFT AI Impact CLI
+- Create a code review of Github pull request using _codereview_ feature of GFT AI Impact CLI
 
 ## Dependencies
 
@@ -58,7 +58,7 @@ On the repository folder, open the file *native-apps/com.gft.aiimpact.json* and 
 Copy the file *native-apps/com.gft.aiimpact.json* to *~/.config/google-chrome/NativeMessagingHosts/*
 
 ### Windows steps
-*Windows version is not avaiable on this version*
+*Windows version is not avaiable yet*
 
 ## Testing
 After install the plugin, when you open the Pull Request details page on Github or Feature details page on Azure DevOps, a new button will appear at the bottom right corner offering the right option for that specific scenario.
