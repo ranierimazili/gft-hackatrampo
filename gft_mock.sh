@@ -53,6 +53,9 @@ while readmsg; do
         storycreator)
             gft ${event_type} --config_path /app/config_${platform}.yml --parent-id ${event_id} > /dev/null 2>&1
             ;;
+        storytaskcreator)
+            gft ${event_type} --config_path /app/config_${platform}.yml --story-id ${event_id} > /dev/null 2>&1
+            ;;
         *)
             echo "Unknown event_type: "${event_type} >> ./temp/log.txt
             ;;

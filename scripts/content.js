@@ -16,6 +16,7 @@ function getButtonTextByRequest(request) {
 }
 
 function getButtonDetails(request) {
+	console.log("getButtonDetails", request)
 	let buttonDetails = null;
   
 	if (request === 'github_pullrequest_details') {
@@ -38,7 +39,18 @@ function getButtonDetails(request) {
 		//buttonText = 'Create User Stories with GFT AI Impact';
 	//} else if (request === 'azure_devops_feature_list') {
 	//  buttonText = 'Create User Stories with GFT AI Impact';
+	} else if (request === 'azure_devops_user_story_details') {
+		buttonDetails = {
+			text: 'Create User Tasks with GFT AI Impact',
+			eventType: 'storytaskcreator',
+			getID: getFeatureIdFromUrl,
+			platform: 'azure'
+		}
+		//buttonText = 'Create User Stories with GFT AI Impact';
+	//} else if (request === 'azure_devops_feature_list') {
+	//  buttonText = 'Create User Stories with GFT AI Impact';
 	}
+
   
 	return buttonDetails;
   }
@@ -187,13 +199,41 @@ function isInsideAzureDevOpsFeaturePage(url) {
 	return false;
 }
 
+//Check if user is inside a Azure DevOps workitems feature page comparing the url and looking
+//a specific component inside the page
+//Ex: https://dev.azure.com/ranieri85/Hackatrampo/_workitems/edit/7/
+function isInsideAzureDevOpsUserStoryPage(url) {
+	let isInsideRightUrl = (url.pathname.match(/^\/([^\/]+)\/([^\/]+)\/_workitems\/edit\/(\d+)\/?$/) !== null);
+	console.log("isInsideAzureDevOpsUserStoryPage: ", url, isInsideRightUrl);
+	if (isInsideRightUrl) {
+		let spans = document.querySelectorAll('span[aria-label="User Story"]');
+
+		// Filtra os spans para verificar se possuem um irmão <a> com a palavra "FEATURE"
+		let spanElement = Array.from(spans).find(span => {
+			let siblingAnchor = span.nextElementSibling; // Pega o próximo irmão
+			return siblingAnchor?.tagName === 'A' && siblingAnchor.textContent.includes('USER STORY');
+		});
+
+		// Exibe o resultado
+		if (spanElement) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	return false;
+}
+
 //Check if user is inside a github pull request list or details page
 function extractInfoFromAzureDevOps(url) {
+	console.log("extractInfoFromAzureDevOps", url)
   if (isInsideAzureDevOpsFeaturePage(url)) {
+	console.log("Feature")
     return "azure_devops_feature_details";
-  } /*else if (isInsideAzureDevOpsListPage(url)) {
-    return "azure_devops_feature_list";
-  }*/
+  } else if (isInsideAzureDevOpsUserStoryPage(url)) {
+	console.log("User story")
+    return "azure_devops_user_story_details";
+  }
   return null;
 }
 
@@ -253,12 +293,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	console.log("requestOnMessageContent:", request);
 	
 	if (request.type === "URL_CHANGED") {
-		const buttonDetails = getButtonDetails(request.details);
+		//TODO: fazer um settimout de 1 segundo e não considerar os detalhes enviado, mas sim reprocessar aqui,
+		//assim tiro a lógica do background
+		/*const buttonDetails = getButtonDetails(request.details);
 		if (buttonDetails == null) {
 			destroyButton();
 		} else {
 			createButton(buttonDetails);
-		}
+		}*/
+		destroyButton();
+		setTimeout(onload, 1000);
 	} else if (request.type === "JOB_FINISHED") {
 		console.log("voltar o botão normal e dar um refresh");
 		if (request.platform === 'azure') {
@@ -270,15 +314,24 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 })
 
 function onload() {
+	console.log("chamou onload");
 	const pageType = checkPage(document.location.href);
+	console.log("pageType", pageType)
 	const buttonDetails = getButtonDetails(pageType);
 
-	if (buttonDetails == null)
+	/*if (buttonDetails == null)
 		destroyButton();
-	else
+	else*/
+	if (buttonDetails != null) {
+		console.log("É pra criar botão", buttonDetails)
 		createButton(buttonDetails);
+	}
+
 }
 
 window.addEventListener('load', function() {
-	this.onload();
+	destroyButton();
+	setTimeout(onload, 1000);
 });
+
+//NOTA Qdo é USER STORY não aparece o botão
